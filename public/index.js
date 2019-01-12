@@ -199,8 +199,40 @@ function decreasePrice(nbPersons, nbHours, barId)
     return pricePerPerson* 0.7 * nbPersons + pricePerHour * nbHours;
   else if(nbPersons > 60)
     return pricePerPerson* 0.5 * nbPersons + pricePerHour * nbHours;
-    
 }
+
+/***** STEP 3 *****/
+/* There is a 30% commission on the booking price to cover the costs.
+The commission is split like this:
+
+    insurance: half of commission
+    the Treasury: 1€ by person
+    Privateaser: the rest
+*/
+function calculateCommission(price, nbPersons)
+{
+  var commission = {};
+  var commissionTotal = price * 0.3;
+  commission.insurance = commissionTotal / 2;
+  commission.treasury = nbPersons;
+  commission.privateaser = commissionTotal - commission.insurance - commission.treasury;
+  return commission;
+}
+
+function changeCommissionForEachEvent(events)
+{
+  for(var i=0; i<events.length; i++)
+  {
+    var price = events[i].price;
+    var nbPersons = events[i].persons;
+    var commission = calculateCommission(price, nbPersons);
+    events[i].commission.insurance = commission.insurance;
+    events[i].commission.treasury = commission.treasury;
+    events[i].commission.privateaser = commission.privateaser;
+  }
+}
+
+changeCommissionForEachEvent(events);
 
 console.log(bars);
 console.log(events);
