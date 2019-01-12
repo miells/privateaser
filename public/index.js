@@ -147,6 +147,7 @@ const actors = [{
 }];
 
 
+/***** STEP 1 *****/
 function calculatePrice(nbPersons, nbHours, barId)
 {
   var price = 0;
@@ -169,10 +170,37 @@ function changePriceForEachBooker(events)
     nbHours = events[i].time;
     nbPersons = events[i].persons;
     events[i].price = calculatePrice(nbPersons, nbHours, barId);
+    if(events[i].options.deductibleReduction == true)
+      events[i].price = decreasePrice(nbPersons, nbHours, barId)
   }
 }
 
 changePriceForEachBooker(events);
+
+/***** STEP 2 *****/
+/*price per people
+    decreases by 10% after 10 persons
+    decreases by 30% after 20 persons
+    decreases by 50% after 60 persons
+*/
+function decreasePrice(nbPersons, nbHours, barId)
+{
+  for(var i=0; i<bars.length; i++)
+  {
+    if(bars[i].id == barId)
+    {
+      var pricePerPerson = bars[i].pricePerPerson;
+      var pricePerHour = bars[i].pricePerHour;
+    }
+  }
+  if(nbPersons > 10 && nbPersons <= 20)
+    return pricePerPerson* 0.9 * nbPersons + pricePerHour * nbHours;
+  else if(nbPersons > 20 && nbPersons <=60)
+    return pricePerPerson* 0.7 * nbPersons + pricePerHour * nbHours;
+  else if(nbPersons > 60)
+    return pricePerPerson* 0.5 * nbPersons + pricePerHour * nbHours;
+    
+}
 
 console.log(bars);
 console.log(events);
