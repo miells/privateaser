@@ -170,7 +170,7 @@ function changePriceForEachBooker(events)
     nbHours = events[i].time;
     nbPersons = events[i].persons;
     events[i].price = calculatePrice(nbPersons, nbHours, barId);
-    if(events[i].options.deductibleReduction == true)
+    if(nbPersons > 10)
       events[i].price = decreasePrice(nbPersons, nbHours, barId)
   }
 }
