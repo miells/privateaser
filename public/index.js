@@ -146,6 +146,34 @@ const actors = [{
   }]
 }];
 
+
+function calculatePrice(nbPersons, nbHours, barId)
+{
+  var price = 0;
+  for(var i=0; i<bars.length; i++)
+  {
+    if(barId == bars[i].id)
+      price = bars[i].pricePerPerson * nbPersons + bars[i].pricePerHour * nbHours;
+  }
+  return price;
+}
+
+function changePriceForEachBooker(events)
+{
+  var nbPersons;
+  var nbHours;
+  var barId;
+  for(var i=0; i<events.length; i++)
+  {
+    barId = events[i].barId;
+    nbHours = events[i].time;
+    nbPersons = events[i].persons;
+    events[i].price = calculatePrice(nbPersons, nbHours, barId);
+  }
+}
+
+changePriceForEachBooker(events);
+
 console.log(bars);
 console.log(events);
 console.log(actors);
