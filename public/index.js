@@ -209,13 +209,26 @@ The commission is split like this:
     the Treasury: 1€ by person
     Privateaser: the rest
 */
-function calculateCommission(price, nbPersons)
+
+/***** STEP 4 *****/
+/* The deductible
+
+The booker is charged an additional 1€/person when he chooses the deductible reduction option.
+
+The additional charge goes to Privateaser, not to the bar.
+*/
+
+function calculateCommission(price, nbPersons, deductibleReduction)
 {
   var commission = {};
+  if(deductibleReduction == true)
+    price = price - nbPersons;
   var commissionTotal = price * 0.3;
   commission.insurance = commissionTotal / 2;
   commission.treasury = nbPersons;
   commission.privateaser = commissionTotal - commission.insurance - commission.treasury;
+  if(deductibleReduction == true)
+    commission.privateaser = commission.privateaser + nbPersons;
   return commission;
 }
 
@@ -223,9 +236,15 @@ function changeCommissionForEachEvent(events)
 {
   for(var i=0; i<events.length; i++)
   {
-    var price = events[i].price;
     var nbPersons = events[i].persons;
-    var commission = calculateCommission(price, nbPersons);
+    var deductibleReduction = events[i].options.deductibleReduction;
+    var price = events[i].price;
+    if(deductibleReduction == true)
+      {
+        price = price + nbPersons;
+        events[i].price = price;
+      }
+    var commission = calculateCommission(price, nbPersons, deductibleReduction);
     events[i].commission.insurance = commission.insurance;
     events[i].commission.treasury = commission.treasury;
     events[i].commission.privateaser = commission.privateaser;
