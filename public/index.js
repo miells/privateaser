@@ -253,6 +253,41 @@ function changeCommissionForEachEvent(events)
 
 changeCommissionForEachEvent(events);
 
+/***** STEP 5 *****/
+/* 
+    the booker must pay the booking price and the (optional) deductible reduction
+    the bar receives the booking price minus the commission
+    the insurance receives its part of the commission
+    the Treasury receives its part of the tax commission
+    Privateaser receives its part of the commission, plus the deductible reduction
+*/
+
+function payTheActors(events, actors)
+{
+  for(var i=0; i<actors.length; i++)
+  {
+    for(var j=0; j<events.length; j++)
+    {
+      if(actors[i].eventId == events[j].id)
+      {
+        // the booker
+        actors[i].payment[0].amount = events[j].price;
+        // the bar
+        var commissionTotal = events[j].commission.insurance + events[j].commission.treasury + events[j].commission.privateaser;
+        actors[i].payment[1].amount = events[j].price - commissionTotal;
+        // the insurance
+        actors[i].payment[2].amount = events[j].commission.insurance;
+        // the treasury
+        actors[i].payment[3].amount = events[j].commission.treasury;
+        // privateaser
+        actors[i].payment[4].amount = events[j].commission.privateaser;
+      }
+    }
+  }
+}
+
+payTheActors(events,actors);
+
 console.log(bars);
 console.log(events);
 console.log(actors);
